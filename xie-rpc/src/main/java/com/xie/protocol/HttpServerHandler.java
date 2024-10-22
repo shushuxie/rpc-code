@@ -1,7 +1,9 @@
 package com.xie.protocol;
 
 import com.xie.common.Invocation;
+import com.xie.common.URL;
 import com.xie.register.LocalRegister;
+import com.xie.register.MapRemoteRegister;
 import org.apache.commons.io.IOUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,6 +12,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 
 public class HttpServerHandler {
 
@@ -18,6 +21,7 @@ public class HttpServerHandler {
         try {
             Invocation invocation = (Invocation)new ObjectInputStream(req.getInputStream()).readObject();
             String interFaceName = invocation.getInterFaceName();
+            // 如何获取对应的实例对象
             Class classImpl= LocalRegister.get(interFaceName,"1.0");
             Method method = classImpl.getMethod(invocation.getMethodName(), invocation.getParameterTypes());
             String result = (String)method.invoke(classImpl.newInstance(), invocation.getParameters());
